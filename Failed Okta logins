@@ -1,0 +1,3 @@
+Failed logins
+Okta_CL
+| where eventType_s =~ "user.session.start"and outcome_reason_s !in ("VERIFICATION_ERROR","INVALID_CREDENTIALS")
