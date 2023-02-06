@@ -1,0 +1,17 @@
+let netskope_ips = dynamic 
+([
+"163.0.0.0/8","163.0.0.0/16"
+]);
+let microsoft_ips = dynamic([
+"20.40.0.0/13", "20.128.0.0/16", "20.48.0.0/12", "20.34.0.0/15", "20.64.0.0/10", "20.33.0.0/16", "20.36.0.0/14"
+]);
+let cell_ip_list = dynamic([
+"172.32.0.0/11", "13.64.0.0/11","174.192.0.0/10","107.64.0.0/10", "166.128.0.0/9"
+]);
+SigninLogs
+| where isnotempty(Location) and LocationDetails.state != 'Nebraska'
+//50074 = User did not pass the MFA challenge, 50057 = client has requested access to a resource which isn't listed in the requested permissions,530032 = 	BlockedByConditionalAccessOnSecurityPolicy 
+| where ResultType == "50074" or ResultType == "50057" or ResultType == "530032"
+| where not(ipv4_is_in_any_range(IPAddress, netskope_ips))
+| where not (ipv4_is_in_any_range(IPAddress, microsoft_ips))
+| where not (ipv4_is_in_any_range(IPAddress, cell_ip_list))
