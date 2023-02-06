@@ -1,0 +1,18 @@
+union DeviceProcessEvents, DeviceNetworkEvents
+// Using PowerShell processes
+| where FileName in~ ("powershell.exe", "powershell_ise.exe", "cmd.exe")
+//This is a known good executable at UBT
+| where InitiatingProcessFileName != "ir_agent.exe"
+// Suspicious commands
+| where ProcessCommandLine has_any("WebClient",
+    "DownloadFile",
+    "DownloadData",
+    "DownloadString",
+    "WebRequest",
+    "Shellcode",
+    "http",
+    "https",
+    "whoami",
+    "netstat")
+| project DeviceName, InitiatingProcessFileName, InitiatingProcessCommandLine, 
+    FileName, ProcessCommandLine, RemoteIP, RemoteUrl, RemotePort, RemoteIPType
