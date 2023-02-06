@@ -1,0 +1,12 @@
+UrlClickEvents
+| where ActionType == "ClickAllowed" or IsClickedThrough != "0"
+| where Url contains "linkedin.com"
+
+OR 
+
+Exclude some known good domains
+let ubt_domain = dynamic (["www.ubt.com", "www.bravowell.com" ]);
+UrlClickEvents
+| where ActionType =~ "ClickAllowed"
+| where not(Url has_any ("ubt.com/", "www.bravowell.com","https://unionbanktrust.sharepoint.com","microsoft.com", "office.com"))
+| summarize Count = count() by Url
