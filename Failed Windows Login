@@ -1,0 +1,6 @@
+WindowsEvent
+| where EventID == 4767 or EventID == 4740 or EventID == 4325 or EventID == 4625 or EventID ==4771 or EventID == 4777
+| evaluate bag_unpack(EventData)
+| project TimeGenerated, EventID, TargetUserName, Computer, WorkstationName, TargetDomainName, IpAddress
+| where TargetUserName =~ "TODO: ADD USERNAME"
+| order by TimeGenerated desc 

@@ -1,0 +1,4 @@
+| summarize Count = count() by ColumnName
+
+
+| project-reorder Column1, Column2… 

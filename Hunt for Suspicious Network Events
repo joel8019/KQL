@@ -1,0 +1,9 @@
+Find network events that occurred  on nonstandard ports
+DeviceNetworkEvents 
+| where ActionType == "NetworkSignatureInspected" 
+| extend json = parse_json(AdditionalFields)
+| project LocalIP,LocalPort,RemoteIP,RemotePort,SignatureName = tostring(json.SignatureName),SignatureMatchedContent = tostring(json.SignatureMatchedContent),SamplePacketContent = tostring(json.SamplePacketContent)
+// Looks for SMB_Client signatures on ports other than 445 and 139
+|where (SignatureName == "SMB_Client" and LocalPort !in(445,139) and 
+// Looks for DNS Requests on non-standard ports. 
+RemotePort !in(445,139)) or (SignatureName == "DNS_Request" and LocalPort !in(53,137,5353,5355) and RemotePort !in(53,137,5353,5355))
