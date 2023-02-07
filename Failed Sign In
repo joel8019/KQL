@@ -1,0 +1,11 @@
+//Codes to look out for according to MS https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/security-operations-user-accounts
+WindowsEvent
+| where EventID == 50126 or EventID == 50053 or EventID ==50097 or EventID==500121 or EventID == 500155 or EventID == 500158 or EventID == 53003 or EventID == 50057
+| extend message = case((EventID == "50126"), "Sign-in failure",
+                        (EventID == "50053"), "Blocked by Conditional Access",
+                        (EventID == "50097"), "MFA failure",
+                        (EventID == "500121"), "MFA failure",
+                        (EventID == "500155"), "MFA failure",
+                        (EventID == "500158"), "MFA failure",
+                        (EventID == "53003"),"Blocked by Conditional Access",
+                        (EventID == "50057"),"UserDisabled","")
