@@ -1,0 +1,11 @@
+WindowsEvent
+| where EventID == 50126 or EventID == 53003 or EventID ==50074 or EventID==500121 
+| extend message = case((EventID == "50126"), "Sign-in failure",
+                        (EventID == "53003"), "Blocked by Conditional Access",
+                        (EventID == "50074"), "MFA failure",
+                        (EventID == "500121"), "MFA failure", "")
+| evaluate bag_unpack(EventData)
+| project-reorder TimeGenerated, message, EventID, Computer
+
+Looking for these sign in failures according to
+https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/security-operations-privileged-accounts#things-to-monitor
