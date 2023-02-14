@@ -1,0 +1,6 @@
+UrlClickEvents
+| where UrlChain contains "TODO"
+| join kind=inner EmailEvents on NetworkMessageId  //Get sender email address from these url clicks
+| join kind=inner EmailEvents on SenderDisplayName //Get the rest of the emails sent by these senders
+| join kind= inner EmailAttachmentInfo on NetworkMessageId // Get any files sent in these emails, will create multiple rows if there are multiple attatchments in the email 
+| project TimeGenerated,Url, AccountUpn, Workload, SenderMailFromAddress, Subject, AuthenticationDetails1, FileName, SHA256, IsClickedThrough, ActionType
